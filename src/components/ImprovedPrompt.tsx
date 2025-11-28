@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import type { ImprovedPrompt as ImprovedPromptType } from "../types";
 
 interface ImprovedPromptProps {
@@ -49,23 +55,16 @@ const ImprovedPrompt: React.FC<ImprovedPromptProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-3xl font-bold text-gray-900">
+    <Dialog open={true} onOpenChange={(open) => !open && onStartOver()}>
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto font-sans">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold text-gray-900">
             ✨ AI 응답 생성 완료!
-          </h2>
-          <button
-            onClick={onStartOver}
-            className="px-4 py-2 text-blue-600 hover:text-blue-800 font-medium"
-          >
-            새로 시작하기
-          </button>
-        </div>
-        <p className="text-gray-600">
-          다음은 질문-답변을 바탕으로 생성된 상세한 응답입니다.
-        </p>
-      </div>
+          </DialogTitle>
+          <p className="text-sm text-gray-600 mt-2">
+            다음은 질문-답변을 바탕으로 생성된 상세한 응답입니다.
+          </p>
+        </DialogHeader>
 
       <div className="space-y-6">
         {/* 원본 프롬프트 */}
@@ -173,30 +172,30 @@ const ImprovedPrompt: React.FC<ImprovedPromptProps> = ({
               components={{
                 h1: ({ node, ...props }) => (
                   <h1
-                    className="text-3xl font-bold text-green-900 mt-6 mb-4 pb-2 border-b-2 border-green-300"
+                    className="text-3xl font-bold text-green-900 mt-6 mb-4 pb-2 border-b-2 border-green-300 font-sans"
                     {...props}
                   />
                 ),
                 h2: ({ node, ...props }) => (
                   <h2
-                    className="text-2xl font-bold text-green-900 mt-5 mb-3 pb-2 border-b border-green-300"
+                    className="text-2xl font-bold text-green-900 mt-5 mb-3 pb-2 border-b border-green-300 font-sans"
                     {...props}
                   />
                 ),
                 h3: ({ node, ...props }) => (
                   <h3
-                    className="text-xl font-semibold text-green-900 mt-4 mb-2"
+                    className="text-xl font-semibold text-green-900 mt-4 mb-2 font-sans"
                     {...props}
                   />
                 ),
                 h4: ({ node, ...props }) => (
                   <h4
-                    className="text-lg font-semibold text-green-900 mt-3 mb-2"
+                    className="text-lg font-semibold text-green-900 mt-3 mb-2 font-sans"
                     {...props}
                   />
                 ),
                 p: ({ node, ...props }) => (
-                  <p className="text-green-800 mb-4 leading-7" {...props} />
+                  <p className="text-green-800 mb-4 leading-7 font-sans" {...props} />
                 ),
                 ul: ({ node, ...props }) => (
                   <ul
@@ -358,7 +357,8 @@ const ImprovedPrompt: React.FC<ImprovedPromptProps> = ({
           </button>
         </div>
       </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
