@@ -1,24 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import type { ImprovedPrompt as ImprovedPromptType } from "../types";
 
-interface ImprovedPromptProps {
-  improvedPrompt: ImprovedPromptType;
-  onStartOver: () => void;
-}
-
-const ImprovedPrompt: React.FC<ImprovedPromptProps> = ({
-  improvedPrompt,
-  onStartOver,
-}) => {
+const ImprovedPrompt: React.FC = () => {
+  const navigate = useNavigate();
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [improvedPrompt, setImprovedPrompt] = useState<ImprovedPromptType | null>(null);
+
+  useEffect(() => {
+    const savedPrompt = localStorage.getItem('improvedPrompt');
+    if (savedPrompt) {
+      try {
+        const parsed = JSON.parse(savedPrompt);
+        // Date 객체 복원
+        parsed.timestamp = new Date(parsed.timestamp);
+        setImprovedPrompt(parsed);
+      } catch (error) {
+        console.error('Failed to parse improved prompt:', error);
+        navigate('/');
+      }
+    } else {
+      navigate('/');
+    }
+  }, [navigate]);
+
+  const handleStartOver = () => {
+    localStorage.removeItem('improvedPrompt');
+    navigate('/');
+  };
+
+  if (!improvedPrompt) {
+    return null;
+  }
 
   const copyToClipboard = async (text: string, fieldName: string) => {
     try {
@@ -31,14 +46,14 @@ const ImprovedPrompt: React.FC<ImprovedPromptProps> = ({
   };
 
   return (
-    <Dialog open={true} onOpenChange={(open) => !open && onStartOver()}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto font-sans pt-6">
-        <DialogHeader className="mb-4">
+    <div className="min-h-screen bg-gray-50 font-sans">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="mb-6">
           <div className="flex items-start justify-between">
             <div>
-              <DialogTitle className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900">
                 ✨ AI 응답 생성 완료!
-              </DialogTitle>
+              </h1>
               <p className="text-sm text-gray-600 mt-2">
                 다음은 질문-답변을 바탕으로 생성된 상세한 응답입니다.
               </p>
@@ -84,7 +99,7 @@ const ImprovedPrompt: React.FC<ImprovedPromptProps> = ({
               )}
             </button>
           </div>
-        </DialogHeader>
+        </div>
 
         <div className="space-y-6">
           {/* AI 생성 응답 */}
@@ -157,18 +172,9 @@ const ImprovedPrompt: React.FC<ImprovedPromptProps> = ({
                     children,
                     ...props
                   }: any) => {
-                    return !inline ? (
+                    return (
                       <code
-                        className={`${
-                          className || ""
-                        } block bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm font-mono mb-5 border border-gray-800`}
-                        {...props}
-                      >
-                        {children}
-                      </code>
-                    ) : (
-                      <code
-                        className="bg-gray-100 text-gray-900 px-2 py-1 rounded text-sm font-mono border border-gray-200"
+                        className="font-bold text-gray-900"
                         {...props}
                       >
                         {children}
@@ -177,7 +183,7 @@ const ImprovedPrompt: React.FC<ImprovedPromptProps> = ({
                   },
                   pre: ({ node, children, ...props }: any) => (
                     <pre
-                      className="bg-gray-900 p-0 rounded-lg overflow-x-auto mb-5 border border-gray-800"
+                      className="mb-5"
                       {...props}
                     >
                       {children}
@@ -227,18 +233,18 @@ const ImprovedPrompt: React.FC<ImprovedPromptProps> = ({
             </div>
           </div>
 
-          {/* 액션 버튼 */}
-          <div className="flex justify-center pt-4">
-            <button
-              onClick={onStartOver}
-              className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-            >
-              새로운 요청하기
-            </button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+           {/* 액션 버튼 */}
+           <div className="flex justify-center pt-6">
+             <button
+               onClick={handleStartOver}
+               className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+             >
+               새로운 요청하기
+             </button>
+           </div>
+         </div>
+      </div>
+    </div>
   );
 };
 
