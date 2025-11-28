@@ -38,26 +38,15 @@ const QuestionSection: React.FC<QuestionSectionProps> = ({
     }
   };
 
-  const getCategoryIcon = (category: string) => {
-    const icons = {
-      context: '🌍',
-      purpose: '🎯',
-      audience: '👥',
-      format: '📋',
-      constraints: '⚠️'
+  const getCategoryLabel = (category: string) => {
+    const labels = {
+      context: '맥락',
+      purpose: '목적',
+      audience: '대상',
+      format: '형식',
+      constraints: '제약'
     };
-    return icons[category as keyof typeof icons] || '❓';
-  };
-
-  const getCategoryColor = (category: string) => {
-    const colors = {
-      context: 'bg-blue-50 border-blue-200',
-      purpose: 'bg-green-50 border-green-200',
-      audience: 'bg-purple-50 border-purple-200',
-      format: 'bg-yellow-50 border-yellow-200',
-      constraints: 'bg-red-50 border-red-200'
-    };
-    return colors[category as keyof typeof colors] || 'bg-gray-50 border-gray-200';
+    return labels[category as keyof typeof labels] || '기타';
   };
 
   const answeredCount = Object.values(answers).filter(answer => answer.trim() !== '').length;
@@ -67,7 +56,7 @@ const QuestionSection: React.FC<QuestionSectionProps> = ({
       <div className="mb-8">
         <button
           onClick={onBack}
-          className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
+          className="flex items-center text-gray-500 hover:text-gray-700 mb-6 transition-colors"
           disabled={isLoading}
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,18 +65,17 @@ const QuestionSection: React.FC<QuestionSectionProps> = ({
           돌아가기
         </button>
         
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          프롬프트 개선을 위한 질문
+        <h2 className="text-3xl font-bold text-gray-900 mb-3">
+          추가 정보를 알려주세요
         </h2>
-        <p className="text-gray-600 mb-4">
-          더 나은 프롬프트를 만들기 위해 몇 가지 질문에 답해주세요. 
-          모든 질문에 답할 필요는 없습니다.
+        <p className="text-gray-600 mb-6">
+          더 정확한 답변을 위해 몇 가지 질문에 답해주세요. 모든 질문에 답할 필요는 없습니다.
         </p>
         
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <p className="text-sm text-blue-800">
-            💡 <strong>진행 상황:</strong> {answeredCount}/{questions.length} 질문 답변 완료
-            {answeredCount > 0 && ' (답변이 있는 질문만으로도 개선 가능합니다)'}
+        <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg">
+          <p className="text-sm text-gray-700">
+            <span className="font-medium">진행 상황:</span> {answeredCount}/{questions.length} 질문 답변 완료
+            {answeredCount > 0 && <span className="text-gray-500 ml-2">(답변이 있는 질문만으로도 진행 가능합니다)</span>}
           </p>
         </div>
       </div>
@@ -96,34 +84,40 @@ const QuestionSection: React.FC<QuestionSectionProps> = ({
         {questions.map((question, index) => (
           <div 
             key={question.id} 
-            className={`p-6 border rounded-lg ${getCategoryColor(question.category)}`}
+            className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="mb-4">
-              <h3 className="text-lg font-medium text-gray-900 mb-2 flex items-center">
-                <span className="text-xl mr-2">{getCategoryIcon(question.category)}</span>
-                질문 {index + 1}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                    {getCategoryLabel(question.category)}
+                  </span>
+                  <span className="text-sm text-gray-400">질문 {index + 1}</span>
+                </div>
+              </div>
+              <h3 className="text-base font-semibold text-gray-900 leading-relaxed">
+                {question.question}
               </h3>
-              <p className="text-gray-700">{question.question}</p>
             </div>
 
             <textarea
               value={answers[question.id] || ''}
               onChange={(e) => handleAnswerChange(question.id, e.target.value)}
               placeholder="답변을 입력해주세요..."
-              className="w-full h-20 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full h-24 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 resize-none transition-all text-sm"
               disabled={isLoading}
             />
 
             {question.examples && question.examples.length > 0 && (
               <div className="mt-4">
-                <p className="text-sm font-medium text-gray-700 mb-2">💡 예시 답변:</p>
+                <p className="text-xs font-medium text-gray-500 mb-3">예시 답변</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {question.examples.map((example, exampleIndex) => (
                     <button
                       key={exampleIndex}
                       type="button"
                       onClick={() => handleExampleClick(question.id, example)}
-                      className="text-left p-2 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                      className="text-left p-3 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-gray-300 transition-all"
                       disabled={isLoading}
                     >
                       {example}
@@ -135,10 +129,10 @@ const QuestionSection: React.FC<QuestionSectionProps> = ({
           </div>
         ))}
 
-        <div className="flex justify-between items-center pt-6">
+        <div className="flex justify-between items-center pt-6 border-t border-gray-200">
           <p className="text-sm text-gray-500">
             {answeredCount > 0 
-              ? `${answeredCount}개의 답변으로 프롬프트를 개선할 수 있습니다.`
+              ? `${answeredCount}개의 답변으로 진행할 수 있습니다.`
               : '최소 1개 이상의 질문에 답변해주세요.'
             }
           </p>
@@ -146,7 +140,7 @@ const QuestionSection: React.FC<QuestionSectionProps> = ({
           <button
             type="submit"
             disabled={answeredCount === 0 || isLoading}
-            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-8 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {isLoading ? '응답 생성 중...' : '응답 생성하기'}
           </button>
