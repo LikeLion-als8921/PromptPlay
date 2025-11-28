@@ -111,7 +111,7 @@ export const PromptAnalysisLoading: React.FC = () => {
   );
 };
 
-// 프롬프트 개선용 로딩 컴포넌트
+// 응답 생성용 로딩 컴포넌트
 export const PromptImprovementLoading: React.FC = () => {
   return (
     <div className="w-full max-w-4xl mx-auto p-6">
@@ -124,14 +124,14 @@ export const PromptImprovementLoading: React.FC = () => {
             </div>
           </div>
           
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">프롬프트 개선 중</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">AI 응답 생성 중</h2>
           <p className="text-lg text-gray-600 mb-6">
-            답변을 바탕으로 더 나은 프롬프트를 생성하고 있습니다...
+            질문-답변을 바탕으로 상세한 응답을 생성하고 있습니다...
           </p>
         </div>
 
         <div className="bg-green-50 rounded-lg p-6">
-          <h3 className="font-medium text-green-900 mb-2">⚡ 개선 중인 요소들</h3>
+          <h3 className="font-medium text-green-900 mb-2">⚡ 처리 중인 요소들</h3>
           <div className="grid grid-cols-2 gap-2 text-sm text-green-800">
             <div className="flex items-center">
               <span className="mr-2">🎯</span>
@@ -146,8 +146,8 @@ export const PromptImprovementLoading: React.FC = () => {
               논리적 구조화
             </div>
             <div className="flex items-center">
-              <span className="mr-2">🎭</span>
-              실행 가능한 지시사항
+              <span className="mr-2">🤖</span>
+              AI 응답 생성
             </div>
           </div>
         </div>

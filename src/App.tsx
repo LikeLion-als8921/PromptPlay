@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { AppState, ImprovedPrompt as ImprovedPromptType } from './types';
-import { analyzePromptAndGenerateQuestions, generateImprovedPrompt } from './api/chatgpt';
+import { analyzePromptAndGenerateQuestions, generateImprovedPrompt } from './api/gemini';
 import { 
   detectIntent, 
   getRelevantQuestions
